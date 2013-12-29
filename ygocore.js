@@ -4,8 +4,58 @@
 var prompt      = require('prompt'); /* debugging prompt, use in development */
 var WebSocket   = require('ws'); /* websockets */
 var fs          = require('fs'); /* file system */
-var lzmajs      = require('lzma-purejs'); /* file compression for replay files, they have to be in lmza for intercompatiblity */
-var ffi         = require('nodeffi'); /* allows dynamic linking of the ocgapi.dll */
+//var lzmajs      = require('lzma-purejs'); /* file compression for replay files, they have to be in lmza for intercompatiblity */
+var ref         = require('ref');
+var struct      = require('ref-struct');
+var ffi         = require('ffi'); /* allows dynamic linking of the ocgapi.dll */
+
+
+var script_reader   = struct({
+    script_name : 'char*',
+    len         : 'int*'
+});
+//var card_reader     = struct({
+//    code        :'uint32',
+//    data        :card_data,
+//});
+var message_handler = struct({
+    pduel       : 'void*',
+    message_type: 'uint32'
+});
+
+var ocgapi = ffi.Library(__dirname + '/ocgcore.dll', {
+    'set_script_reader'  : ['void',  [script_reader] ],
+//    'set_card_reader'    : ['void',  ['card_reader '] ],
+    'set_message_handler': ['void',  [message_handler] ],
+    'create_duel'        : ['pointer' ,  ['uint32'] ],
+    'start_duel'         : ['void',  ['pointer', 'int'] ],
+    'end_duel'           : ['void',  ['pointer']],
+    'set_player_info'    : ['void',  ['pointer', 'int32', 'int32', 'int32', 'int32']],
+    'get_log_message'    : ['void',  ['pointer', 'byte*']],
+    'get_message'        : ['int32', ['pointer', 'byte*']],
+    'process'            : ['int32', ['pointer']],
+    'new_card'           : ['void',  ['pointer', 'uint32', 'uint8', 'uint8', 'uint8', 'uint8', 'uint8']],
+    'new_tag_card'       : ['void',  ['pointer', 'uint32', 'uint8', 'uint8']],
+    'query_card'         : ['int32', ['pointer', 'uint8', 'uint8', 'int32', 'byte*', 'int32']],
+    'query_field_count'  : ['int32', ['pointer', 'uint8', 'uint8']],
+    'query_field_card'   : ['int32', ['pointer', 'uint8', 'uint8', 'int32', 'byte*', 'int32']],
+    'query_field_info'   : ['int32', ['pointer', 'byte*']],
+    'set_responsei'      : ['void',  ['pointer', 'int32']],
+    'set_responseb'      : ['void',  ['pointer', 'byte*']],
+    'preload_script'     : ['int32', ['pointer', 'char*', 'int32']]
+    
+    
+    
+    
+}); /* 'function_name' : ['type', ['typeforParam1', 'typeforParam2']]*/
+
+
+
+//ocgapi.procces({a : 2});
+
+
+
+
 
 
 /* checks if we started from node(true), or started from the command prompt(false) */
@@ -26,43 +76,19 @@ var configuration = {
     'timer'     : process.argv[(launchpostion+10)],
     'production': process.argv[(launchpostion+11)]
                     };
-var gamestate {
+var gamestate= {
     started     : false,
     player0     : null,
     player1     : null,
     player2     : null,
     player3     : null,
     spectators  : 0,
-    gamerules   : '';
+    gamerules   : '',
     ranked      : false,
     start_time  : null,
     url         : 'ws://angelofcode.com:'+configuration.port+'/ygocorejs'
 };
-var ocgapi = ffi.Library('ocgapi', {
-    'set_script_reader'  : ['void',  ['script_reader'] ],
-    'set_card_reader'    : ['void',  ['card_reader '] ],
-    'set_message_handler': ['void',  ['message_handler  '] ],
-    'create_duel'        : ['ptr' ,  ['uint32'] ],
-    'start_duel'         : ['void',  ['ptr', 'int'] ],
-    'end_duel'           : ['void',  ['ptr']],
-    'set_player_info'    : ['void',  ['ptr', 'int32', 'int32', 'int32', 'int32']],
-    'get_log_message'    : ['void',  ['ptr', 'byte*']],
-    'get_message'        : ['int32', ['ptr', 'byte*']],
-    'process'            : ['int32', ['ptr']],
-    'new_card'           : ['void',  ['ptr', 'uint32', 'uint8', 'uint8', 'uint8', 'uint8', 'uint8']],
-    'new_tag_card'       : ['void',  ['ptr', 'uint32', 'uint8', 'uint8']],
-    'query_card'         : ['int32', ['ptr', 'uint8', 'uint8', 'int32', 'byte*', 'int32']],
-    'query_field_count'  : ['int32', ['ptr', 'uint8', 'uint8']],
-    'query_field_card'   : ['int32', ['ptr', 'uint8', 'uint8', 'int32', 'byte*', 'int32']],
-    'query_field_info'   : ['int32', ['ptr', 'byte*']],
-    'set_responsei'      : ['void',  ['ptr ', 'int32']],
-    'set_responseb'      : ['void',  ['ptr', 'byte*']],
-    'preload_script'     : ['int32', ['ptr', 'char*', 'int32']]
-    
-    
-    
-    
-}); /* 'function_name' : ['type', ['typeforParam1', 'typeforParam2']]*/
+
 console.log(configuration);
 var lflist  = fs.readFileSync('lflist.conf').toString().split("\r\n");
 var banlist = (function(lflist){
