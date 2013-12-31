@@ -1,5 +1,5 @@
 /* we are using JSLint to annoy us so here are some globals */
-/* globals require, process, console, __dirname */
+/* globals require, process, console */
 
 var prompt      = require('prompt'); /* debugging prompt, use in development */
 var WebSocket   = require('ws'); /* websockets */
@@ -10,9 +10,6 @@ var struct      = require('ref-struct');
 var ffi         = require('ffi'); /* allows dynamic linking of the ocgapi.dll */
 
 
-var pduel       = ref.alloc('int');
-var script_name = ref.alloc('char');
-var len         = ref.alloc('int');
 var script_reader   = struct({
     script_name : 'char*',
     len         : 'int*'
@@ -54,7 +51,7 @@ var ocgapi = ffi.Library(__dirname + '/ocgcore.dll', {
 
 
 
-ocgapi.set_script_reader(['a', 10110]);
+//ocgapi.procces({a : 2});
 
 
 
