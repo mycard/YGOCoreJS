@@ -12,8 +12,15 @@ After game end the information is compressed in the standard format and  stored 
 Installation
 ------------
 
+Requirements
+============
+NodeJS
+GitHub (Git)
+
+
 ``` bash
 cd /installation-directory/
+git clone git://github.com/SalvationDevelopment/YGOCoreJS/YGOCore.git
 npm install prompt
 npm install ws
 npm install lzma-purejs
