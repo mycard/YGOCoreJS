@@ -10,10 +10,10 @@ The core can be started via command prompt or .fork in nodejs. the command promp
 After game end the information is compressed in the standard format and  stored on the server, the user is given an URL to use to retrieve it. The core via JSON then stores statistical information in our database and disconnects and shuts down.
 
 Installation
-------------
+============
 
 Requirements
-============
+------------
 NodeJS
 GitHub (Git)
 
