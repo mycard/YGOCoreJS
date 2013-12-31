@@ -8,3 +8,21 @@ YGOCore.js is an implementation of the Server's Client executable using Nodejs. 
 
 The core can be started via command prompt or .fork in nodejs. the command prompt version will cause it to open in debug mode. 
 After game end the information is compressed in the standard format and  stored on the server, the user is given an URL to use to retrieve it. The core via JSON then stores statistical information in our database and disconnects and shuts down.
+
+Installation
+------------
+
+``` bash
+cd /installation-directory/
+npm install prompt
+npm install ws
+npm install lzma-purejs
+npm install nodeffi
+```
+
+Running
+-------
+A single core for testing reasons can be spun up via command prompt, options are intergers unless otherwise stated.
+``` bash
+node ygocore [version] [port] [banlist] [cardpool] [gamemode] [priority(true/false)] [deckcheck] [shuffle] [startlp] [draw] [timer] [development-mode(true/false)]
+```
