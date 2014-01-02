@@ -78,7 +78,13 @@ var ocgapi = ffi.Library(__dirname + '/ocgcore.dll', {
     'set_responsei'      : ['void',  ['pointer', 'int32']],
     'set_responseb'      : ['void',  ['pointer', 'byte*']],
     'preload_script'     : ['int32', ['pointer', 'char*', 'int32']]
-}); /* 'function_name' : ['type', ['typeforParam1', 'typeforParam2']]*/
+}); /* 'function_name' : ['type', ['typeforParam1', 'typeforParam2']]
+function_name(typeforParam1, typeforParam2, etc,..){
+ dllprocessing...
+ return type;
+}
+
+*/
 console.log('OCGCore Engine Loaded');
 
 var mt = new MersenneTwister();
