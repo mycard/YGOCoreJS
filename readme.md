@@ -1,3 +1,6 @@
+Project discontiuned see 
+https://github.com/SalvationDevelopment/YGOPro-Support-System
+
 For each YGOPro implementation there are four programs that need to be running to maintain the system.
 * Player 1's Client
 * Player 2's Client
